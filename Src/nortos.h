@@ -17,7 +17,7 @@ void Delay_ms_OnFastQ(uint32_t Delay);
 uint32_t millis(void);   // redefine to get ms
   
 
-int8_t F_last; // number of last element of fast-speed queue
+volatile int8_t F_last; // number of last element of fast-speed queue
 int8_t F_first; // number of first element of fast-speed queue
 
 uint32_t Timer;

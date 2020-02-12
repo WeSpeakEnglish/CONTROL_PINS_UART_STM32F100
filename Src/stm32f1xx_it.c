@@ -51,6 +51,7 @@
 /* USER CODE BEGIN PFP */
 int8_t F_push(void (*pointerQ)(void) );
 void tick(void);
+void driveLED(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -245,7 +246,7 @@ void USART1_IRQHandler(void)
   /* USER CODE END USART1_IRQn 0 */
   HAL_UART_IRQHandler(&huart1);
   /* USER CODE BEGIN USART1_IRQn 1 */
-
+  F_push(driveLED);
   /* USER CODE END USART1_IRQn 1 */
 }
 

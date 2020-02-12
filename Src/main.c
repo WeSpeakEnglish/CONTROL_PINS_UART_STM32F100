@@ -76,33 +76,53 @@ void blink(int count){
   }
 }
 
-void driveLED(){
-  static uint8_t state = 0;
+void driveLED(void){
+  HAL_UART_Receive_IT(&huart1, buffer, sizeof(buffer));
   
-  if (state != *buffer){ 
-    if (*buffer >= '0' && *buffer <=  '8')
-    state = *buffer;
-  
-  }
-  
-  switch(state){
+  switch(*buffer){
        case '0':
             HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_RESET);
+            HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_RESET);       
+            HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);       
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);       
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);         
             break;
        case '2':
             blink(2);
+            HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_SET);         // TWO OHM SET
+            HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);       // THREE OHM RESET
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);       // FOUR OHM RESET
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);       // EIGHT OHM RESET
             break;
-         break;
        case '3':
             blink(3);
+            HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_RESET);       // TWO OHM RESET
+            HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);       // THREE OHM SET
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);       // FOUR OHM RESET
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);         // EIGHT OHM RESET
             break;
        case '4':
-            blink(4); 
+            blink(8);   
+            HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_RESET);       // TWO OHM RESET
+            HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);       // THREE OHM RESET
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);       // EIGHT OHM RESET
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);         // FOUR OHM SET
             break;
        case '8':
-            blink(8);          
+            blink(4); 
+            HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_RESET);       // TWO OHM RESET
+            HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);       // THREE OHM RESET
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);       // EIGHT OHM SET
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);     // FOUR OHM RESET    
+            break;     
+       case 'L':
+            blink(16);   
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);         // FOUR OHM SET
             break;
-         
+       case 'N':
+            blink(16); 
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);     // FOUR OHM RESET    
+            break;           
   }
 
 }
@@ -160,12 +180,11 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  
+  HAL_UART_Receive_IT(&huart1, buffer, sizeof(buffer));
   while (1)
   {
-    HAL_UART_Receive(&huart1, buffer, sizeof(buffer), 1000);
-    driveLED();
-   // HAL_UART_Transmit(&huart1, buffer, sizeof(buffer), HAL_MAX_DELAY);
-    F_pull()();
+   F_pull()();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
